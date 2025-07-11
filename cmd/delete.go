@@ -1,6 +1,5 @@
 /*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
+Copyright © 2025 Moukhtar youssef moukhtar.youssef06@gmail.com
 */
 package cmd
 
@@ -13,13 +12,9 @@ import (
 // deleteCmd represents the delete command
 var deleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Delete expense",
+	Long: `Delete an expense by its ID.
+Example: expense-tracker delete --id 5`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("delete called")
 	},
@@ -28,13 +23,8 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(deleteCmd)
 
-	// Here you will define your flags and configuration settings.
+	// adding flags
+	deleteCmd.Flags().IntP("id", "i", 0, "ID of the expense to delete")
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// deleteCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// deleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	deleteCmd.MarkFlagRequired("id")
 }

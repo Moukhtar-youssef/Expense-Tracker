@@ -1,6 +1,5 @@
 /*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
+Copyright © 2025 Moukhtar youssef moukhtar.youssef06@gmail.com
 */
 package cmd
 
@@ -13,13 +12,9 @@ import (
 // exportCmd represents the export command
 var exportCmd = &cobra.Command{
 	Use:   "export",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Export to CSV/JSON",
+	Long: `Export all expenses into a CSV or JSON file for sharing or backup.
+Example: expense-tracker export --format csv --output expenses.csv`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("export called")
 	},
@@ -28,13 +23,13 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(exportCmd)
 
-	// Here you will define your flags and configuration settings.
+	// adding flags
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// exportCmd.PersistentFlags().String("foo", "", "A help for foo")
+	exportCmd.Flags().StringP("format", "f", "json", "Export format")
+	exportCmd.Flags().StringP("output", "o", "", "File to write output to")
+	exportCmd.Flags().IntP("month", "m", 0, "Export only for one month")
+	exportCmd.Flags().StringP("category", "c", "", "Filter export by category")
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// exportCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	exportCmd.MarkFlagRequired("format")
+	exportCmd.MarkFlagRequired("output")
 }

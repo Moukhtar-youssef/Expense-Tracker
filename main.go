@@ -1,6 +1,5 @@
 /*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
+Copyright © 2025 Moukhtar youssef moukhtar.youssef06@gmail.com
 */
 package main
 

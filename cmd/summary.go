@@ -1,6 +1,5 @@
 /*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
+Copyright © 2025 Moukhtar youssef moukhtar.youssef06@gmail.com
 */
 package cmd
 
@@ -13,13 +12,9 @@ import (
 // summaryCmd represents the summary command
 var summaryCmd = &cobra.Command{
 	Use:   "summary",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "View totals",
+	Long: `Show total expenses and optionally filter by month.
+Example: expense-tracker summary --month 7`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("summary called")
 	},
@@ -27,14 +22,8 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(summaryCmd)
+	// adding flags
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// summaryCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// summaryCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	summaryCmd.Flags().IntP("month", "m", 1, "Show summary for a given month")
+	summaryCmd.Flags().StringP("category", "c", "", "Filter summary by caregory")
 }
