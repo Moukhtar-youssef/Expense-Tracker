@@ -4,7 +4,8 @@ Copyright © 2025 Moukhtar youssef moukhtar.youssef06@gmail.com
 package cmd
 
 import (
-	"fmt"
+	operation "Expense_tracker/internal/Operation"
+	"Expense_tracker/internal/storage"
 
 	"github.com/spf13/cobra"
 )
@@ -16,7 +17,8 @@ var deleteCmd = &cobra.Command{
 	Long: `Delete an expense by its ID.
 Example: expense-tracker delete --id 5`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("delete called")
+		id, _ := cmd.Flags().GetInt("id")
+		operation.DeleteExpense(storage.DB, id)
 	},
 }
 

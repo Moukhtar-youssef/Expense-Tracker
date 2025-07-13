@@ -4,7 +4,8 @@ Copyright © 2025 Moukhtar youssef moukhtar.youssef06@gmail.com
 package cmd
 
 import (
-	"fmt"
+	operation "Expense_tracker/internal/Operation"
+	"Expense_tracker/internal/storage"
 
 	"github.com/spf13/cobra"
 )
@@ -17,7 +18,7 @@ var listCmd = &cobra.Command{
 Example: expense-tracker list --category "Food"`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		operation.ListExpenses(storage.DB)
 	},
 }
 

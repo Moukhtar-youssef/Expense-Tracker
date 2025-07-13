@@ -4,9 +4,11 @@ Copyright © 2025 Moukhtar youssef moukhtar.youssef06@gmail.com
 package cmd
 
 import (
+	operation "Expense_tracker/internal/Operation"
+	"Expense_tracker/internal/storage"
 	"Expense_tracker/internal/utils"
-	"fmt"
 	"log"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -19,17 +21,21 @@ var addCmd = &cobra.Command{
 Example: expense-tracker add --description "Lunch" --amount 15 --category "Food"`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		description, _ := cmd.Flags().GetString("description")
+		descriptionraw, _ := cmd.Flags().GetString("description")
+		description := strings.TrimSpace(descriptionraw)
 		amount, _ := cmd.Flags().GetFloat64("amount")
-		category, _ := cmd.Flags().GetString("category")
+		categoryraw, _ := cmd.Flags().GetString("category")
+		category := strings.TrimSpace(categoryraw)
 		date, _ := cmd.Flags().GetString("date")
 
 		dateParsed, err := utils.ParseDate(date)
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		fmt.Println("Add called with:", description, amount, category, dateParsed)
+		if category == "" {
+			category = "uncategorized"
+		}
+		operation.AddExepnse(storage.DB, dateParsed, amount, category, description)
 	},
 }
 
@@ -45,14 +51,4 @@ func init() {
 
 	addCmd.MarkFlagRequired("description")
 	addCmd.MarkFlagRequired("amount")
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// addCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// addCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
