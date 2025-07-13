@@ -41,61 +41,61 @@ expense-tracker help
 ### Add Expense
 
 ```bash
-expense-tracker add --description "Lunch" --amount 12.50 --category "Food" --date 2025-07-11
+expense_tracker add --description "Lunch" --amount 12.50 --category "Food" --date 2025-07-11
 ```
 
 ### List Expenses
 
 ```bash
-expense-tracker list --category "Transport" --from 2025-07-01 --to 2025-07-10
+expense_tracker list --category "Transport" --from 2025-07-01 --to 2025-07-10
 ```
 
 ### Update Expense
 
 ```bash
-expense-tracker update --id 3 --amount 20 --description "Dinner"
+expense_tracker update --id 3 --amount 20 --description "Dinner"
 ```
 
 ### Delete Expense
 
 ```bash
-expense-tracker delete --id 5
+expense_tracker delete --id 5
 ```
 
 ### Export Expenses
 
 ```bash
-expense-tracker export --format csv --output expenses.csv --month 7
+expense_tracker export --format csv --output expenses.csv --month 7
 ```
 
 ### Set a Budget
 
 ```bash
-expense-tracker budget set --month 7 --amount 500
+expense_tracker budget set --month 7 --amount 500
 ```
 
 ### Check Budget
 
 ```bash
-expense-tracker budget check --month 7
+expense_tracker budget check --month 7
 ```
 
 ### View Summary
 
 ```bash
-expense-tracker summary --month 7 --category "Food"
+expense_tracker summary --month 7 --category "Food"
 ```
 
 ### Run Doctor
 
 ```bash
-expense-tracker doctor
+expense_tracker doctor
 ```
 
 ### Initialize Config
 
 ```bash
-expense-tracker init
+expense_tracker init
 ```
 
 ---
