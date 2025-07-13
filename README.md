@@ -23,7 +23,7 @@
 > Requires Go 1.20+
 
 ```bash
-git clone https://github.com/Moukhat-youssef/Expense-Tracker.git
+git clone https://github.com/Moukhtar-youssef/Expense-Tracker.git
 cd Expense-Tracker
 go install
 ```
