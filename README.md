@@ -14,6 +14,7 @@
 - Run system diagnostics
 - Initialize configuration
 - Built using [Cobra](https://github.com/spf13/cobra) & [Viper](https://github.com/spf13/viper)
+- Built for [Roadmap.sh](https://roadmap.sh/projects/expense-tracker)
 
 ---
 
@@ -22,8 +23,8 @@
 > Requires Go 1.20+
 
 ```bash
-git clone https://github.com/yourusername/expense-tracker.git
-cd expense-tracker
+git clone https://github.com/Moukhat-youssef/Expense-Tracker.git
+cd Expense-Tracker
 go install
 ```
 
