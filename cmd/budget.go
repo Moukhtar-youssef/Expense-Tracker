@@ -20,12 +20,10 @@ You can set a new budget for a month or check if your spending has exceeded it.`
 
 // setcmd represents the 'budget set' command
 var setcmd = &cobra.Command{
-	Use:   "set",
-	Short: "Set monthly budget",
-	Long: `Set a monthly budget limit.
-
-Example:
-  expense-tracker budget set --month 7 --amount 500`,
+	Use:     "set",
+	Short:   "Set monthly budget",
+	Long:    `Set a monthly budget limit.`,
+	Example: `expense-tracker budget set --month 7 --amount 500`,
 	Run: func(cmd *cobra.Command, args []string) {
 		month, _ := cmd.Flags().GetInt("month")
 		amount, _ := cmd.Flags().GetFloat64("amount")
@@ -35,12 +33,10 @@ Example:
 
 // checkcmd represents the 'budget check' command
 var checkcmd = &cobra.Command{
-	Use:   "check",
-	Short: "Check if budget is exceeded",
-	Long: `Check whether your spending has exceeded the set monthly budget.
-
-Example:
-  expense-tracker budget check --month 7`,
+	Use:     "check",
+	Short:   "Check if budget is exceeded",
+	Long:    `Check whether your spending has exceeded the set monthly budget.`,
+	Example: `expense-tracker budget check --month 7`,
 	Run: func(cmd *cobra.Command, args []string) {
 		month, _ := cmd.Flags().GetInt("month")
 		fmt.Printf("Checking budget for Month %d...\n", month)

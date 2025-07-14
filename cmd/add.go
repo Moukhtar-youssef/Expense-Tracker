@@ -15,17 +15,19 @@ import (
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
-	Use:   "add",
-	Short: "Add new expense (wrap multi-word description in quotes)",
-	Long: `Add a new expense to your tracker with details like description, amount, category, and date.
-Example: expense-tracker add --description "Lunch" --amount 15 --category "Food"`,
+	Use:     "add",
+	Short:   "Add new expense (wrap multi-word description in quotes)",
+	Long:    `Add a new expense to your tracker with details like description, amount, category, and date.`,
+	Example: `expense-tracker add --description "Lunch" --amount 15 --category "Food"`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		descriptionraw, _ := cmd.Flags().GetString("description")
-		description := strings.TrimSpace(descriptionraw)
+		descriptiontrimmed := strings.TrimSpace(descriptionraw)
+		description := strings.ToLower(descriptiontrimmed)
 		amount, _ := cmd.Flags().GetFloat64("amount")
 		categoryraw, _ := cmd.Flags().GetString("category")
-		category := strings.TrimSpace(categoryraw)
+		categorytrimmed := strings.TrimSpace(categoryraw)
+		category := strings.ToLower(categorytrimmed)
 		date, _ := cmd.Flags().GetString("date")
 
 		dateParsed, err := utils.ParseDate(date)
@@ -35,7 +37,10 @@ Example: expense-tracker add --description "Lunch" --amount 15 --category "Food"
 		if category == "" {
 			category = "uncategorized"
 		}
-		operation.AddExepnse(storage.DB, dateParsed, amount, category, description)
+		err = operation.AddExepnse(storage.DB, dateParsed, amount, category, description)
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }
 

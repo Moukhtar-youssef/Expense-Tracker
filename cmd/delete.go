@@ -6,6 +6,7 @@ package cmd
 import (
 	operation "Expense_tracker/internal/Operation"
 	"Expense_tracker/internal/storage"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -18,12 +19,28 @@ var deleteCmd = &cobra.Command{
 Example: expense-tracker delete --id 5`,
 	Run: func(cmd *cobra.Command, args []string) {
 		id, _ := cmd.Flags().GetInt("id")
-		operation.DeleteExpense(storage.DB, id)
+		err := operation.DeleteExpense(storage.DB, id)
+		if err != nil {
+			log.Fatal(err)
+		}
+	},
+}
+
+var deleteAllCmd = &cobra.Command{
+	Use:   "all",
+	Short: "Delete all expenses",
+	Long:  "Delete all expenses and reset autoincrement id",
+	Run: func(cmd *cobra.Command, args []string) {
+		err := operation.DeleteAllExpenses(storage.DB)
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(deleteCmd)
+	deleteCmd.AddCommand(deleteAllCmd)
 
 	// adding flags
 	deleteCmd.Flags().IntP("id", "i", 0, "ID of the expense to delete")
