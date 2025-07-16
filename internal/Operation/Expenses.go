@@ -29,6 +29,41 @@ func AddExepnse(db *sql.DB, date string, amount float64, category string, descri
 	return nil
 }
 
+func UpdateExpense(db *sql.DB, id int, date string, amount float64, category string, description string) error {
+	stmt := `UPDATE expenses`
+	var updates []string
+	var args []any
+
+	if date != "" {
+		updates = append(updates, "date = ?")
+		args = append(args, date)
+	}
+	if amount != -1 {
+		updates = append(updates, "amount = ?")
+		args = append(args, amount)
+	}
+	if category != "" {
+		updates = append(updates, "category = ?")
+		args = append(args, category)
+	}
+	if description != "" {
+		updates = append(updates, "description = ?")
+		args = append(args, description)
+	}
+
+	if len(updates) > 0 {
+		stmt += " SET " + strings.Join(updates, ",")
+	}
+	stmt += " WHERE id = ?"
+	args = append(args, id)
+
+	_, err := db.Exec(stmt, args...)
+	if err != nil {
+		return fmt.Errorf("Error updating expemse: %w", err)
+	}
+	return nil
+}
+
 func ListExpenses(db *sql.DB, category, from, to string, month int) error {
 	query := `SELECT id , category , amount , date , description FROM expenses`
 	var conditions []string

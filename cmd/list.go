@@ -26,9 +26,6 @@ Example: expense-tracker list --category "Food"`,
 		from, _ := cmd.Flags().GetString("from")
 		to, _ := cmd.Flags().GetString("to")
 		month, _ := cmd.Flags().GetInt("month")
-		if month == -1 {
-			log.Fatal("please provide the number of the month you wanna filter with")
-		}
 
 		err := operation.ListExpenses(storage.DB, category, from, to, month)
 		if err != nil {
