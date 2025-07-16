@@ -1,0 +1,19 @@
+default_currency: "USD"
+currency_symbol: "$"
+locale: en_US
+date_format: "2006-01-02"
+timezone: "Local"
+
+default_category: "uncategorized"
+
+display_format: "table"
+color_output: true 
+show_totals_on_list: true 
+show_monthly_summary_on_start: true 
+dashboard_style: "minimal"
+
+auto_complete: true
+history_file: "~/.expense-tracker-history"
+max_history_entries: 100
+confirm_on_delete: true
+verbose_mode: false

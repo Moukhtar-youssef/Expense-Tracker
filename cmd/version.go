@@ -9,14 +9,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Version = "v0.1.0"
+
 // versionCmd represents the version command
 var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Show version",
-	Long: `Display the current version of the expense-tracker CLI tool.
-Example: expense-tracker version`,
+	Use:     "version",
+	Short:   "Show version",
+	Long:    `Display the current version of the expense-tracker CLI tool.`,
+	Example: `expense-tracker version`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("version called")
+		fmt.Printf("Expense Tracker CLI version: %s \n", Version)
 	},
 }
 
