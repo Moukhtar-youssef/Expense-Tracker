@@ -15,7 +15,7 @@ import (
 
 var DB *sql.DB
 
-func getDBfilepath() (string, error) {
+func GetDBfilepath() (string, error) {
 	ExecPath, err := os.Executable()
 	if err != nil {
 		return "", fmt.Errorf("Error getting Executable path: %w", err)
@@ -25,7 +25,7 @@ func getDBfilepath() (string, error) {
 }
 
 func InitDB() error {
-	DBfilepath, err := getDBfilepath()
+	DBfilepath, err := GetDBfilepath()
 	if err != nil {
 		return err
 	}

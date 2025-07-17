@@ -23,8 +23,11 @@ Example: expense-tracker list --category "Food"`,
 		categoryraw, _ := cmd.Flags().GetString("category")
 		categorytrimmed := strings.TrimSpace(categoryraw)
 		category := strings.ToLower(categorytrimmed)
+
 		from, _ := cmd.Flags().GetString("from")
+
 		to, _ := cmd.Flags().GetString("to")
+
 		month, _ := cmd.Flags().GetInt("month")
 
 		err := operation.ListExpenses(storage.DB, category, from, to, month)

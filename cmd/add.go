@@ -24,19 +24,24 @@ var addCmd = &cobra.Command{
 		descriptionraw, _ := cmd.Flags().GetString("description")
 		descriptiontrimmed := strings.TrimSpace(descriptionraw)
 		description := strings.ToLower(descriptiontrimmed)
+
 		amount, _ := cmd.Flags().GetFloat64("amount")
+
 		categoryraw, _ := cmd.Flags().GetString("category")
 		categorytrimmed := strings.TrimSpace(categoryraw)
 		category := strings.ToLower(categorytrimmed)
+
 		date, _ := cmd.Flags().GetString("date")
 
 		dateParsed, err := utils.ParseDate(date)
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		if category == "" {
 			category = "uncategorized"
 		}
+
 		err = operation.AddExepnse(storage.DB, dateParsed, amount, category, description)
 		if err != nil {
 			log.Fatal(err)

@@ -4,6 +4,7 @@ Copyright © 2025 Moukhtar youssef moukhtar.youssef06@gmail.com
 package cmd
 
 import (
+	"Expense_tracker/internal/config"
 	"Expense_tracker/internal/storage"
 	"log"
 
@@ -17,7 +18,7 @@ var (
 		Use:   "expense-tracker",
 		Short: "A simple CLI expense tracker",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			// config.InitConfig()
+			config.InitConfig()
 			err := storage.InitDB()
 			if err != nil {
 				log.Fatal(err)

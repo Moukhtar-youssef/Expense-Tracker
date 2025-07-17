@@ -15,20 +15,24 @@ import (
 
 // updateCmd represents the update command
 var updateCmd = &cobra.Command{
-	Use:   "update",
-	Short: "Update existing expense",
-	Long: `Update details of an existing expense by ID.
-Example: expense-tracker update --id 3 --amount 25 --description "Dinner"`,
+	Use:     "update",
+	Short:   "Update existing expense",
+	Long:    `Update details of an existing expense by ID.`,
+	Example: `expense-tracker update --id 3 --amount 25 --description "Dinner"`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		descriptionraw, _ := cmd.Flags().GetString("description")
 		descriptiontrimmed := strings.TrimSpace(descriptionraw)
 		description := strings.ToLower(descriptiontrimmed)
+
 		amount, _ := cmd.Flags().GetFloat64("amount")
+
 		categoryraw, _ := cmd.Flags().GetString("category")
 		categorytrimmed := strings.TrimSpace(categoryraw)
 		category := strings.ToLower(categorytrimmed)
+
 		date, _ := cmd.Flags().GetString("date")
+
 		id, _ := cmd.Flags().GetInt("id")
 
 		err := operation.UpdateExpense(storage.DB, id, date, amount, category, description)

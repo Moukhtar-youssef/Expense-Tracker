@@ -5,11 +5,11 @@ Copyright © 2025 Moukhtar youssef moukhtar.youssef06@gmail.com
 package models
 
 type Expenses struct {
-	ID          int
-	Date        string
-	Amount      float64
-	Category    string
-	Description string
+	ID          int     `json:"id"`
+	Date        string  `json:"date"`
+	Amount      float64 `json:"amount"`
+	Category    string  `json:"category"`
+	Description string  `json:"description"`
 }
 
 type Budget struct {

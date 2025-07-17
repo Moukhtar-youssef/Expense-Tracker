@@ -7,8 +7,13 @@ package operation
 import (
 	"Expense_tracker/internal/models"
 	"database/sql"
+	"encoding/csv"
+	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
 func checkExists(db *sql.DB, id int) (bool, error) {
@@ -103,7 +108,7 @@ func ListExpenses(db *sql.DB, category, from, to string, month int) error {
 		expenses = append(expenses, e)
 	}
 	for _, e := range expenses {
-		fmt.Printf("ID: %d | %s | %.2f | %s | %s\n", e.ID, e.Category, e.Amount, e.Date, e.Description)
+		fmt.Printf("ID: %d | %s | %.2f %s | %s | %s\n", e.ID, e.Category, e.Amount, viper.GetString("currency_symbol"), e.Date, e.Description)
 	}
 
 	return nil
@@ -134,5 +139,77 @@ func DeleteAllExpenses(db *sql.DB) error {
 	if err != nil {
 		return fmt.Errorf("Error deleting AUTOINCREMENT id from table: %w", err)
 	}
+	return nil
+}
+
+func ExportExpenses(db *sql.DB, exportType string, exportFilename string, category string, month int) error {
+	query := `SELECT id, date, amount, category, description FROM expenses`
+	var conditions []string
+	var args []any
+	if category != "" {
+		conditions = append(conditions, " category = ? ")
+		args = append(args, category)
+	}
+	if month != -1 {
+		conditions = append(conditions, "strftime('%m',date) = ?")
+		args = append(args, fmt.Sprintf("%02d", month))
+	}
+
+	if len(conditions) > 0 {
+		query += " WHERE " + strings.Join(conditions, " AND ")
+	}
+	query += "ORDER BY id"
+
+	rows, err := db.Query(query, args...)
+	if err != nil {
+		return fmt.Errorf("Error querying expenses for export: %w", err)
+	}
+	defer rows.Close()
+
+	var expenses []models.Expenses
+
+	for rows.Next() {
+		var e models.Expenses
+		err = rows.Scan(&e.ID, &e.Date, &e.Amount, &e.Category, &e.Description)
+		if err != nil {
+			return fmt.Errorf("Error scanning row for export: %w", err)
+		}
+		expenses = append(expenses, e)
+	}
+	switch exportType {
+	case "json":
+		data, err := json.MarshalIndent(expenses, "", "  ")
+		if err != nil {
+			return fmt.Errorf("Error marshaling expenses to JSON: %w", err)
+		}
+		err = os.WriteFile(fmt.Sprintf("%s.json", exportFilename), data, 0644)
+		if err != nil {
+			return fmt.Errorf("Error writing JSON to file: %w", err)
+		}
+	case "csv":
+		file, err := os.Create(fmt.Sprintf("%s.csv", exportFilename))
+		if err != nil {
+			return fmt.Errorf("Error creating csv file: %w", err)
+		}
+		defer file.Close()
+
+		writer := csv.NewWriter(file)
+		defer writer.Flush()
+
+		header := []string{"id", "date", "amount", "category", "description"}
+		err = writer.Write(header)
+		if err != nil {
+			return fmt.Errorf("Error writing csv header: %w", err)
+		}
+
+		for _, expense := range expenses {
+			record := []string{fmt.Sprintf("%d", expense.ID), expense.Category, fmt.Sprintf("%.2f %s", expense.Amount, viper.GetString("currency_symbol")), expense.Date, expense.Description}
+			err := writer.Write(record)
+			if err != nil {
+				return fmt.Errorf("Error writing csv records: %w", err)
+			}
+		}
+	}
+
 	return nil
 }
