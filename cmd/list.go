@@ -6,8 +6,8 @@ package cmd
 import (
 	operation "Expense_tracker/internal/Operation"
 	"Expense_tracker/internal/storage"
+	"Expense_tracker/internal/utils"
 	"log"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -21,16 +21,21 @@ Example: expense-tracker list --category "Food"`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		categoryraw, _ := cmd.Flags().GetString("category")
-		categorytrimmed := strings.TrimSpace(categoryraw)
-		category := strings.ToLower(categorytrimmed)
+		category := utils.CleanStrings(categoryraw)
 
-		from, _ := cmd.Flags().GetString("from")
+		fromraw, _ := cmd.Flags().GetString("from")
+		from := utils.CleanStrings(fromraw)
 
-		to, _ := cmd.Flags().GetString("to")
+		toraw, _ := cmd.Flags().GetString("to")
+		to := utils.CleanStrings(toraw)
 
-		month, _ := cmd.Flags().GetInt("month")
+		uncheckedmonth, _ := cmd.Flags().GetInt("month")
+		month, err := utils.ValidateMonth(uncheckedmonth)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-		err := operation.ListExpenses(storage.DB, category, from, to, month)
+		err = operation.ListExpenses(storage.DB, category, from, to, month)
 		if err != nil {
 			log.Fatal(err)
 		}

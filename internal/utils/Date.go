@@ -6,7 +6,6 @@ package utils
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/jinzhu/now"
@@ -16,7 +15,6 @@ import (
 )
 
 func ParseDate(input string) (string, error) {
-	input = strings.ToLower(strings.TrimSpace(input))
 	whenparser := when.New(nil)
 	whenparser.Add(en.All...)
 	whenparser.Add(common.All...)
@@ -49,4 +47,12 @@ func ParseDate(input string) (string, error) {
 		return r.Time.Format("2006-01-02"), nil
 
 	}
+}
+
+func GetCurrentMonth() int {
+	return int(time.Now().Month())
+}
+
+func GetCurrentYear() int {
+	return time.Now().Year()
 }

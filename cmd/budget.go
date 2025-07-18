@@ -6,6 +6,7 @@ package cmd
 import (
 	operation "Expense_tracker/internal/Operation"
 	"Expense_tracker/internal/storage"
+	"Expense_tracker/internal/utils"
 	"fmt"
 	"log"
 
@@ -28,9 +29,18 @@ var setcmd = &cobra.Command{
 	Long:    `Set a monthly budget limit.`,
 	Example: `expense-tracker budget set --month 7 --amount 500`,
 	Run: func(cmd *cobra.Command, args []string) {
-		month, _ := cmd.Flags().GetInt("month")
-		amount, _ := cmd.Flags().GetFloat64("amount")
-		err := operation.SetBudget(storage.DB, month, amount)
+		uncheckedmonth, _ := cmd.Flags().GetInt("month")
+		month, err := utils.ValidateMonth(uncheckedmonth)
+		if err != nil {
+			log.Fatal(err)
+		}
+		amountraw, _ := cmd.Flags().GetFloat64("amount")
+		amount, err := utils.ValidateAmount(amountraw)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = operation.SetBudget(storage.DB, month, amount)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -45,9 +55,13 @@ var checkcmd = &cobra.Command{
 	Long:    `Check whether your spending has exceeded the set monthly budget.`,
 	Example: `expense-tracker budget check --month 7`,
 	Run: func(cmd *cobra.Command, args []string) {
-		month, _ := cmd.Flags().GetInt("month")
+		uncheckedmonth, _ := cmd.Flags().GetInt("month")
+		month, err := utils.ValidateMonth(uncheckedmonth)
+		if err != nil {
+			log.Fatal(err)
+		}
 		fmt.Printf("Checking budget for Month %d...\n", month)
-		err := operation.CheckBudget(storage.DB, month)
+		err = operation.CheckBudget(storage.DB, month)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -62,11 +76,11 @@ func init() {
 	budgetCmd.AddCommand(checkcmd)
 
 	// Flags for both subcommands
-	setcmd.Flags().IntP("month", "m", 1, "Target month (1-12)")
+	setcmd.Flags().IntP("month", "m", -1, "Target month (1-12)")
 	setcmd.Flags().Float64P("amount", "a", 0, "Budget amount")
 	setcmd.MarkFlagRequired("month")
 	setcmd.MarkFlagRequired("amount")
 
-	checkcmd.Flags().IntP("month", "m", 1, "Target month (1-12)")
+	checkcmd.Flags().IntP("month", "m", -1, "Target month (1-12)")
 	checkcmd.MarkFlagRequired("month")
 }

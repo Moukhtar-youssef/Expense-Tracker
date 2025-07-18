@@ -8,7 +8,6 @@ import (
 	"Expense_tracker/internal/storage"
 	"Expense_tracker/internal/utils"
 	"log"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -22,16 +21,19 @@ var addCmd = &cobra.Command{
 
 	Run: func(cmd *cobra.Command, args []string) {
 		descriptionraw, _ := cmd.Flags().GetString("description")
-		descriptiontrimmed := strings.TrimSpace(descriptionraw)
-		description := strings.ToLower(descriptiontrimmed)
+		description := utils.CleanStrings(descriptionraw)
 
-		amount, _ := cmd.Flags().GetFloat64("amount")
+		amountraw, _ := cmd.Flags().GetFloat64("amount")
+		amount, err := utils.ValidateAmount(amountraw)
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		categoryraw, _ := cmd.Flags().GetString("category")
-		categorytrimmed := strings.TrimSpace(categoryraw)
-		category := strings.ToLower(categorytrimmed)
+		category := utils.CleanStrings(categoryraw)
 
-		date, _ := cmd.Flags().GetString("date")
+		dateraw, _ := cmd.Flags().GetString("date")
+		date := utils.CleanStrings(dateraw)
 
 		dateParsed, err := utils.ParseDate(date)
 		if err != nil {

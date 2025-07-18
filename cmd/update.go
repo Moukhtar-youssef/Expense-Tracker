@@ -6,9 +6,9 @@ package cmd
 import (
 	operation "Expense_tracker/internal/Operation"
 	"Expense_tracker/internal/storage"
+	"Expense_tracker/internal/utils"
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -22,20 +22,23 @@ var updateCmd = &cobra.Command{
 
 	Run: func(cmd *cobra.Command, args []string) {
 		descriptionraw, _ := cmd.Flags().GetString("description")
-		descriptiontrimmed := strings.TrimSpace(descriptionraw)
-		description := strings.ToLower(descriptiontrimmed)
+		description := utils.CleanStrings(descriptionraw)
 
-		amount, _ := cmd.Flags().GetFloat64("amount")
+		amountraw, _ := cmd.Flags().GetFloat64("amount")
+		amount, err := utils.ValidateAmount(amountraw)
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		categoryraw, _ := cmd.Flags().GetString("category")
-		categorytrimmed := strings.TrimSpace(categoryraw)
-		category := strings.ToLower(categorytrimmed)
+		category := utils.CleanStrings(categoryraw)
 
-		date, _ := cmd.Flags().GetString("date")
+		dateraw, _ := cmd.Flags().GetString("date")
+		date := utils.CleanStrings(dateraw)
 
 		id, _ := cmd.Flags().GetInt("id")
 
-		err := operation.UpdateExpense(storage.DB, id, date, amount, category, description)
+		err = operation.UpdateExpense(storage.DB, id, date, amount, category, description)
 		if err != nil {
 			log.Fatal(err)
 		}

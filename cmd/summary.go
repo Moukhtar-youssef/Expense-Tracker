@@ -6,8 +6,8 @@ package cmd
 import (
 	operation "Expense_tracker/internal/Operation"
 	"Expense_tracker/internal/storage"
+	"Expense_tracker/internal/utils"
 	"log"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -19,13 +19,16 @@ var summaryCmd = &cobra.Command{
 	Long: `Show total expenses and optionally filter by month.
 Example: expense-tracker summary --month 7`,
 	Run: func(cmd *cobra.Command, args []string) {
-		month, _ := cmd.Flags().GetInt("month")
+		uncheckedmonth, _ := cmd.Flags().GetInt("month")
+		month, err := utils.ValidateMonth(uncheckedmonth)
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		categoryraw, _ := cmd.Flags().GetString("category")
-		categorytrimmed := strings.TrimSpace(categoryraw)
-		category := strings.ToLower(categorytrimmed)
+		category := utils.CleanStrings(categoryraw)
 
-		err := operation.SummarizeExpenses(storage.DB, category, month)
+		err = operation.SummarizeExpenses(storage.DB, category, month)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -3,6 +3,7 @@ package operation
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/charmbracelet/huh"
 )
@@ -51,5 +52,22 @@ func SetBudget(db *sql.DB, month int, amount float64) error {
 }
 
 func CheckBudget(db *sql.DB, month int) error {
+	var budget sql.NullFloat64
+	query := `SELECT amount FROM budget WHERE month = ?`
+	err := db.QueryRow(query, month).Scan(&budget)
+	if err != nil {
+		return fmt.Errorf("error getting budget amount: %w", err)
+	}
+
+	var total sql.NullFloat64
+	query = `SELECT SUM(amount) FROM expenses WHERE  strftime('%m',date) = ? AND strftime('%Y',date) = ? `
+	year := time.Now().Year()
+	err = db.QueryRow(query, fmt.Sprintf("%02d", month), fmt.Sprintf("%d", year)).Scan(&total)
+	if err != nil {
+		return fmt.Errorf("error getting sum of expenses in the month:%w", err)
+	}
+
+	fmt.Printf("The budget limit is: %.2f \n This month expenses is: %.2f", budget.Float64, total.Float64)
+
 	return nil
 }
