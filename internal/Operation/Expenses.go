@@ -17,7 +17,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func checkExists(db *sql.DB, id int) (bool, error) {
+func checkExpenseExists(db *sql.DB, id int) (bool, error) {
 	var exists bool
 	err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM expenses WHERE id = ?)`, id).Scan(&exists)
 	if err != nil {
@@ -36,6 +36,12 @@ func AddExepnse(db *sql.DB, date string, amount float64, category string, descri
 }
 
 func UpdateExpense(db *sql.DB, id int, date string, amount float64, category string, description string) error {
+	exists, err := checkExpenseExists(db, id)
+	if err != nil {
+		return err
+	} else if !exists {
+		return fmt.Errorf("Expense with ID %d not found", id)
+	}
 	stmt := `UPDATE expenses`
 	var updates []string
 	var args []any
@@ -63,7 +69,7 @@ func UpdateExpense(db *sql.DB, id int, date string, amount float64, category str
 	stmt += " WHERE id = ?"
 	args = append(args, id)
 
-	_, err := db.Exec(stmt, args...)
+	_, err = db.Exec(stmt, args...)
 	if err != nil {
 		return fmt.Errorf("Error updating expemse: %w", err)
 	}
@@ -117,11 +123,10 @@ func ListExpenses(db *sql.DB, category, from, to string, month int) error {
 }
 
 func DeleteExpense(db *sql.DB, id int) error {
-	exists, err := checkExists(db, id)
+	exists, err := checkExpenseExists(db, id)
 	if err != nil {
 		return err
-	}
-	if !exists {
+	} else if !exists {
 		return fmt.Errorf("Expense with ID %d not found", id)
 	}
 	stmt := `DELETE FROM expenses WHERE id = ?`

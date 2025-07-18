@@ -48,9 +48,8 @@ func InitDB() error {
 
 	createbudgetTable := `
 		CREATE TABLE IF NOT EXISTS budget (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			month TEXT NOT NULL,
-			budget REAL NOT NULL
+			month TEXT PRIMARY KEY NOT NULL,
+			amount REAL NOT NULL
 	);
 	`
 	_, err = DB.Exec(createbudgetTable)

@@ -60,9 +60,8 @@ func DoctorChecking() error {
 		fmt.Println("❌ Table 'budget' exists: NO")
 		fmt.Println("Creating 'budget' table")
 		err := createTable(storage.DB, "budget",
-			"id INTEGER PRIMARY KEY AUTOINCREMENT",
-			"month TEXT NOT NULL",
-			"budget REAL NOT NULL")
+			"month TEXT PRIMARY KEY NOT NULL",
+			"amount REAL NOT NULL")
 		if err != nil {
 			fmt.Println("❌ Error creating 'budget table'")
 			return fmt.Errorf("Error creating 'budget' table: %w", err)

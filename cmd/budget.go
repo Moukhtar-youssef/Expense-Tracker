@@ -4,7 +4,10 @@ Copyright © 2025 Moukhtar youssef moukhtar.youssef06@gmail.com
 package cmd
 
 import (
+	operation "Expense_tracker/internal/Operation"
+	"Expense_tracker/internal/storage"
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -27,6 +30,10 @@ var setcmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		month, _ := cmd.Flags().GetInt("month")
 		amount, _ := cmd.Flags().GetFloat64("amount")
+		err := operation.SetBudget(storage.DB, month, amount)
+		if err != nil {
+			log.Fatal(err)
+		}
 		fmt.Printf("Set budget: Month %d, Amount %.2f\n", month, amount)
 	},
 }
@@ -40,6 +47,10 @@ var checkcmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		month, _ := cmd.Flags().GetInt("month")
 		fmt.Printf("Checking budget for Month %d...\n", month)
+		err := operation.CheckBudget(storage.DB, month)
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }
 
