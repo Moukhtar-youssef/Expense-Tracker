@@ -33,7 +33,7 @@ func InitDB() error {
 	if err != nil {
 		return fmt.Errorf("Error opening sql db: %w", err)
 	}
-	createTable := `
+	createexpensesTable := `
     CREATE TABLE IF NOT EXISTS expenses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         category TEXT NOT NULL,
@@ -41,9 +41,22 @@ func InitDB() error {
         date TEXT NOT NULL,
     	description TEXT NOT NULL
     );`
-	_, err = DB.Exec(createTable)
+	_, err = DB.Exec(createexpensesTable)
 	if err != nil {
-		return fmt.Errorf("Error creating table in sqlite3: %w", err)
+		return fmt.Errorf("Error creating expenses table in sqlite3: %w", err)
 	}
+
+	createbudgetTable := `
+		CREATE TABLE IF NOT EXISTS budget (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			month TEXT NOT NULL,
+			budget REAL NOT NULL,
+	)
+	`
+	_, err = DB.Exec(createbudgetTable)
+	if err != nil {
+		return fmt.Errorf("Error creating budget table in sqlite3: %w", err)
+	}
+
 	return DB.Ping()
 }

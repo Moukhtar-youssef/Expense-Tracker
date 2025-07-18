@@ -46,11 +46,30 @@ func DoctorChecking() error {
 			"description TEXT NOT NULL")
 		if err != nil {
 			fmt.Println("❌ Error creating 'expenses' table")
-			return fmt.Errorf("Error creating 'expenses' table")
+			return fmt.Errorf("Error creating 'expenses' table: %w", err)
 		}
 		fmt.Println("✅ Table 'expenses' created: Yes")
 	} else {
 		fmt.Println("✅ Table 'expenses' exists: Yes")
+	}
+
+	exists, err = checkTableExists(storage.DB, "budget")
+	if err != nil {
+		return fmt.Errorf("❌ Error checking budget table: %w", err)
+	} else if !exists {
+		fmt.Println("❌ Table 'budget' exists: NO")
+		fmt.Println("Creating 'budget' table")
+		err := createTable(storage.DB, "budget",
+			"id INTEGER PRIMARY KEY AUTOINCREMENT",
+			"month TEXT NOT NULL",
+			"budget REAL NOT NULL")
+		if err != nil {
+			fmt.Println("❌ Error creating 'budget table'")
+			return fmt.Errorf("Error creating 'budget' table: %w", err)
+		}
+		fmt.Println("✅ Table 'budget' created: YES")
+	} else {
+		fmt.Println("✅ Table 'budget', exists: YES")
 	}
 
 	// check file system

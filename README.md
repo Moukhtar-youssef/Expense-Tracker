@@ -1,5 +1,7 @@
 # Expense Tracker CLI
 
+8 / 11 commands finished
+
 ## A powerful and minimal command-line tool to track your expenses, budgets, and summaries right from the terminal.
 
 ## Features
