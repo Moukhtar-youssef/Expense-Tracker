@@ -1,7 +1,10 @@
 package operation
 
 import (
+	"Expense_tracker/internal/config"
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/charmbracelet/huh"
 )
@@ -50,9 +53,46 @@ func InitCommand() error {
 		huh.NewInput().Title("Where should backups be stored? (e.g., ./backups)").Value(&backup_location),
 		huh.NewSelect[string]().Options(huh.NewOption("none", "none"), huh.NewOption("daily", "daily"), huh.NewOption("weekly", "weekly"), huh.NewOption("monthly", "monthly")).Title("How often should backups run? (none, daily, weekly, month)").Value(&backup_frequency),
 	))
+
 	err := form.Run()
 	if err != nil {
 		return fmt.Errorf("Error running the huh init form: %w", err)
+	}
+
+	var customCategories []string
+
+	customCategories = strings.Split(custom_categories, ",")
+
+	for i := range customCategories {
+		customCategories[i] = strings.TrimSpace(customCategories[i])
+	}
+
+	budget_warning_threshold_int, err := strconv.Atoi(budget_warning_threshold)
+	if err != nil {
+		return fmt.Errorf("Error converting budget_warning_thershold to int: %w", err)
+	}
+
+	appconfig := config.Config{
+		Currency:               currency,
+		CurrencySymbol:         currency_symbol,
+		Locale:                 locale,
+		DateFormat:             date_format,
+		Timezone:               timezone,
+		DefaultCategory:        default_category,
+		CustomCategories:       customCategories,
+		ColorOutput:            color_output,
+		ShowTotalsOnList:       show_totals_on_list,
+		EnableBudgeting:        enable_budgeting,
+		WarnIfBudgetExceeded:   warn_if_budget_exceeded,
+		BudgetWarningThreshold: budget_warning_threshold_int,
+		AutoBackup:             auto_backup,
+		BackupLocation:         backup_location,
+		BackupFrequency:        backup_frequency,
+	}
+
+	err = config.CreateConfig(&appconfig)
+	if err != nil {
+		return err
 	}
 	return nil
 }

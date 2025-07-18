@@ -4,16 +4,18 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
-	DefaultCurrency string `mapstructure:"default_currency"`
-	CurrencySymbol  string `mapstructure:"currency_symbol"`
-	Locale          string `mapstructure:"locale"`
-	DateFormat      string `mapstructure:"date_format"`
-	Timezone        string `mapstructure:"timezone"`
+	Currency       string `mapstructure:"currency"`
+	CurrencySymbol string `mapstructure:"currency_symbol"`
+	Locale         string `mapstructure:"locale"`
+	DateFormat     string `mapstructure:"date_format"`
+	Timezone       string `mapstructure:"timezone"`
 
 	DefaultCategory  string   `mapstructure:"default_category"`
 	CustomCategories []string `mapstructure:"custom_categories"`
@@ -40,7 +42,6 @@ func InitConfig() error {
 		return fmt.Errorf("Can't find home directory: %w", err)
 	}
 
-	viper.AddConfigPath(".")
 	viper.AddConfigPath(home + "/.expense-tracker")
 	viper.SetConfigType("yaml")
 	viper.SetConfigName("config")
@@ -58,6 +59,25 @@ func InitConfig() error {
 	return nil
 }
 
-func CreateConfig() error {
+func CreateConfig(app_config *Config) error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("Can't find home directory: %w", err)
+	}
+	configDir := filepath.Join(home, ".expense-tracker")
+	configFile := filepath.Join(configDir, "config.yaml")
+
+	err = os.MkdirAll(configDir, 0755)
+	if err != nil {
+		return fmt.Errorf("Error creating config dir: %w", err)
+	}
+	data, err := yaml.Marshal(app_config)
+	if err != nil {
+		return fmt.Errorf("Error marshaling config into yaml: %w", err)
+	}
+	err = os.WriteFile(configFile, data, 0644)
+	if err != nil {
+		return fmt.Errorf("Error creating config file: %w", err)
+	}
 	return nil
 }
