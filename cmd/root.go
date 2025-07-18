@@ -6,6 +6,8 @@ package cmd
 import (
 	"Expense_tracker/internal/config"
 	"Expense_tracker/internal/storage"
+	"errors"
+	"fmt"
 	"log"
 
 	"github.com/spf13/cobra"
@@ -18,8 +20,14 @@ var (
 		Use:   "expense-tracker",
 		Short: "A simple CLI expense tracker",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			config.InitConfig()
-			err := storage.InitDB()
+			err := config.InitConfig()
+			if err != nil {
+				if !errors.Is(err, config.NoconfigFile) {
+					log.Fatal(err)
+				}
+				fmt.Println(err.Error())
+			}
+			err = storage.InitDB()
 			if err != nil {
 				log.Fatal(err)
 			}

@@ -29,13 +29,17 @@ Example: expense-tracker list --category "Food"`,
 		toraw, _ := cmd.Flags().GetString("to")
 		to := utils.CleanStrings(toraw)
 
-		uncheckedmonth, _ := cmd.Flags().GetInt("month")
-		month, err := utils.ValidateMonth(uncheckedmonth)
-		if err != nil {
-			log.Fatal(err)
+		month := -1 // default if not provided
+		if cmd.Flags().Changed("month") {
+			uncheckedmonth, _ := cmd.Flags().GetInt("month")
+			var err error
+			month, err = utils.ValidateMonth(uncheckedmonth)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 
-		err = operation.ListExpenses(storage.DB, category, from, to, month)
+		err := operation.ListExpenses(storage.DB, category, from, to, month)
 		if err != nil {
 			log.Fatal(err)
 		}

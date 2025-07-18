@@ -1,19 +1,30 @@
-default_currency: "USD"
+default_currency: USD
 currency_symbol: "$"
 locale: en_US
-date_format: "2006-01-02"
+date_format: "2006-01-02" 
 timezone: "Local"
 
 default_category: "uncategorized"
+custom_categories:
+  - food
+  - transport
+  - rent
+  - entertainment
+  - subscriptions
+  - health
+  - savings
+  - income
 
-display_format: "table"
-color_output: true 
-show_totals_on_list: true 
-show_monthly_summary_on_start: true 
-dashboard_style: "minimal"
 
-auto_complete: true
-history_file: "~/.expense-tracker-history"
-max_history_entries: 100
-confirm_on_delete: true
-verbose_mode: false
+color_output: true
+show_totals_on_list: true
+
+enable_budgeting: true
+warn_if_budget_exceeded: true
+budget_warning_threshold: 90
+
+auto_backup: true
+backup_location: "./backups"
+backup_frequency: "weekly"  
+
+
