@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -83,8 +84,9 @@ func ListExpenses(db *sql.DB, category, from, to string, month int) error {
 		args = append(args, from, to)
 	}
 	if month != -1 {
-		conditions = append(conditions, "strftime('%m',date) = ?")
-		args = append(args, fmt.Sprintf("%02d", month))
+		year := time.Now().Year()
+		conditions = append(conditions, "strftime('%m',date) = ?", "strftime('%Y',date) = ?")
+		args = append(args, fmt.Sprintf("%02d", month), fmt.Sprintf("%d", year))
 	}
 
 	if len(conditions) > 0 {
@@ -203,7 +205,13 @@ func ExportExpenses(db *sql.DB, exportType string, exportFilename string, catego
 		}
 
 		for _, expense := range expenses {
-			record := []string{fmt.Sprintf("%d", expense.ID), expense.Category, fmt.Sprintf("%.2f %s", expense.Amount, viper.GetString("currency_symbol")), expense.Date, expense.Description}
+			record := []string{
+				fmt.Sprintf("%d", expense.ID),
+				expense.Date,
+				fmt.Sprintf("%.2f %s", expense.Amount, viper.GetString("currency_symbol")),
+				expense.Category,
+				expense.Description,
+			}
 			err := writer.Write(record)
 			if err != nil {
 				return fmt.Errorf("Error writing csv records: %w", err)
@@ -211,5 +219,44 @@ func ExportExpenses(db *sql.DB, exportType string, exportFilename string, catego
 		}
 	}
 
+	return nil
+}
+
+func SummarizeExpenses(db *sql.DB, category string, month int) error {
+	query := `SELECT SUM(amount) FROM expenses`
+	var conditions []string
+	var args []any
+
+	if category != "" {
+		conditions = append(conditions, "category = ?")
+		args = append(args, category)
+	}
+
+	if month != -1 {
+		conditions = append(conditions, "strftime('%m', date) = ?")
+		args = append(args, fmt.Sprintf("%02d", month))
+	}
+
+	year := time.Now().Year()
+	conditions = append(conditions, "strftime('%Y', date) = ?")
+	args = append(args, fmt.Sprintf("%d", year))
+
+	if len(conditions) > 0 {
+		query += " WHERE " + strings.Join(conditions, " AND ")
+	}
+
+	var total sql.NullFloat64
+	err := db.QueryRow(query, args...).Scan(&total)
+	if err != nil {
+		return fmt.Errorf("error getting summary: %w", err)
+	}
+	fmt.Printf("Total expenses")
+	if category != "" {
+		fmt.Printf(" in category '%s'", category)
+	}
+	if month != -1 {
+		fmt.Printf(" for month %d", month)
+	}
+	fmt.Printf(" in %d: %.2f\n", year, total.Float64)
 	return nil
 }
