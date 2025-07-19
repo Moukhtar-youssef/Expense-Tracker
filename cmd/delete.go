@@ -18,8 +18,11 @@ var deleteCmd = &cobra.Command{
 	Long: `Delete an expense by its ID.
 Example: expense-tracker delete --id 5`,
 	Run: func(cmd *cobra.Command, args []string) {
-		id, _ := cmd.Flags().GetInt("id")
-		err := operation.DeleteExpense(storage.DB, id)
+		id, err := cmd.Flags().GetInt("id")
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = operation.DeleteExpense(storage.DB, id)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -20,19 +20,31 @@ var addCmd = &cobra.Command{
 	Example: `expense-tracker add --description "Lunch" --amount 15 --category "Food"`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		descriptionraw, _ := cmd.Flags().GetString("description")
+		descriptionraw, err := cmd.Flags().GetString("description")
+		if err != nil {
+			log.Fatal(err)
+		}
 		description := utils.CleanStrings(descriptionraw)
 
-		amountraw, _ := cmd.Flags().GetFloat64("amount")
+		amountraw, err := cmd.Flags().GetFloat64("amount")
+		if err != nil {
+			log.Fatal(err)
+		}
 		amount, err := utils.ValidateAmount(amountraw)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		categoryraw, _ := cmd.Flags().GetString("category")
+		categoryraw, err := cmd.Flags().GetString("category")
+		if err != nil {
+			log.Fatal(err)
+		}
 		category := utils.CleanStrings(categoryraw)
 
-		dateraw, _ := cmd.Flags().GetString("date")
+		dateraw, err := cmd.Flags().GetString("date")
+		if err != nil {
+			log.Fatal(err)
+		}
 		date := utils.CleanStrings(dateraw)
 
 		dateParsed, err := utils.ParseDate(date)

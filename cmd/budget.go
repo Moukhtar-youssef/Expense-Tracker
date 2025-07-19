@@ -29,12 +29,18 @@ var setcmd = &cobra.Command{
 	Long:    `Set a monthly budget limit.`,
 	Example: `expense-tracker budget set --month 7 --amount 500`,
 	Run: func(cmd *cobra.Command, args []string) {
-		uncheckedmonth, _ := cmd.Flags().GetInt("month")
+		uncheckedmonth, err := cmd.Flags().GetInt("month")
+		if err != nil {
+			log.Fatal(err)
+		}
 		month, err := utils.ValidateMonth(uncheckedmonth)
 		if err != nil {
 			log.Fatal(err)
 		}
-		amountraw, _ := cmd.Flags().GetFloat64("amount")
+		amountraw, err := cmd.Flags().GetFloat64("amount")
+		if err != nil {
+			log.Fatal(err)
+		}
 		amount, err := utils.ValidateAmount(amountraw)
 		if err != nil {
 			log.Fatal(err)
@@ -55,7 +61,10 @@ var checkcmd = &cobra.Command{
 	Long:    `Check whether your spending has exceeded the set monthly budget.`,
 	Example: `expense-tracker budget check --month 7`,
 	Run: func(cmd *cobra.Command, args []string) {
-		uncheckedmonth, _ := cmd.Flags().GetInt("month")
+		uncheckedmonth, err := cmd.Flags().GetInt("month")
+		if err != nil {
+			log.Fatal(err)
+		}
 		month, err := utils.ValidateMonth(uncheckedmonth)
 		if err != nil {
 			log.Fatal(err)

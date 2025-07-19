@@ -1,7 +1,5 @@
 # Expense Tracker CLI
 
-8 / 11 commands finished
-
 ## A powerful and minimal command-line tool to track your expenses, budgets, and summaries right from the terminal.
 
 ## Features
@@ -10,6 +8,7 @@
 - List expenses by category, date, or month
 - Update existing expenses by ID
 - Delete specific expenses
+- Delete all expenses
 - Export expenses to CSV or JSON
 - Manage monthly budgets
 - View summaries by category or month
@@ -64,6 +63,12 @@ expense_tracker update --id 3 --amount 20 --description "Dinner"
 expense_tracker delete --id 5
 ```
 
+### Delete All Expenses
+
+```bash
+expense_tracker delete all
+```
+
 ### Export Expenses
 
 ```bash
@@ -110,6 +115,7 @@ expense_tracker init
 | `list`         | List expenses                  |
 | `update`       | Update an existing expense     |
 | `delete`       | Delete an expense              |
+| `delete all`   | Delete all expenses            |
 | `export`       | Export expenses to CSV or JSON |
 | `budget set`   | Set a monthly budget           |
 | `budget check` | Check if budget is exceeded    |
